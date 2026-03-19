@@ -1,5 +1,6 @@
 import requests
 from pprint import pprint
+from database import add_data
 
 def get_name():
     name_list = input("What is the name for the game? ").lower().split(" ")
@@ -19,10 +20,17 @@ def get_id(get_name):
 def get_price_of_game(id):
     steam_response = requests.get(f"https://store.steampowered.com/api/appdetails?appids={id}&cc=KZ")
     steam_data = steam_response.json()
+    pprint(steam_data)
     if steam_data[str(id)]['data']['is_free'] == True:
-        print('The game is free')
+        # print('The game is free')
+        return "free"
     else:
-        print(steam_data[str(id)]['data']['price_overview']['final_formatted'])
+        # print(steam_data[str(id)]['data']['price_overview']['final_formatted'])
+        # print(steam_data[str(id)]['data']['name'])
+
+        game_name = steam_data[str(id)]['data']['name']
+        game_price = steam_data[str(id)]['data']['price_overview']['final_formatted']
+        add_data(id, game_name, game_price)
+        return game_price
 
 
-get_price_of_game(get_id(get_name()))
